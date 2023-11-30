@@ -3,6 +3,8 @@ package com.zyh.gulimall.member.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.zyh.gulimall.member.feign.CouponFeignService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +28,23 @@ import com.zyh.common.utils.R;
  */
 @RestController
 @RequestMapping("member/member")
+@Slf4j
 public class MemberController {
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private CouponFeignService couponFeignService;
+
+    @RequestMapping("/coupons")
+    public R test(){
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setNickname("张三");
+        R memberCoupons = couponFeignService.memberCoupons();
+        log.info(memberCoupons.toString());
+
+        return R.ok().put("member", memberEntity).put("coupons", memberCoupons.get("Coupons"));
+    }
 
     /**
      * 列表
